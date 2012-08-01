@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Parses a South migration file, and does some basic sanity checking on it.
+Parse a South migration file, and do some basic sanity checking on it.
 
 Usage from the shell:
 

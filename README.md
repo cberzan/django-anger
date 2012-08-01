@@ -17,6 +17,21 @@ from anger.sanity_check_migration import validate_migration_file
 validate_migration_file(open('my_migration.py'))
 ```
 
+## Displaying the strings contained in a South migration.
+
+From the directory containing `anger`:
+
+```
+python -m anger.migration_strings my_migration.py
+```
+
+From Python:
+
+```
+from anger.migration_strings import migration_strings
+migration_strings(open('my_migration.py'))
+```
+
 ## Running the unit tests
 
 From the directory containing `anger` and `testdata`:
