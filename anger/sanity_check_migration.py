@@ -4,10 +4,7 @@
 TODO
 """
 
-import re
-
-from anger.utils import model_start_re
-from anger.utils import skip_lines_until_frozen_models
+from anger.utils import parse_migration
 
 
 class ValidationError(Exception):
@@ -28,9 +25,7 @@ def check_missing_foreign_keys(f):
     Verify that for all ForeignKeys referenced in model fields, the destination
     model is also frozen.
     """
-    # Collect all models referenced as ForeignKeys.
-    # Example:
-    # 
+
 
     
 @register_validator
@@ -38,6 +33,19 @@ def check_duplicate_models(f):
     """
     Verify that no model is frozen twice.
     """
+    # parse_migration() gives us a dict, which cannot have duplicate keys.
+    # So we have to get messy and look at the raw file.
+    models, complete_apps = parse_migration(f)
+    found = {}
+    f.seek(0)
+    for line in f:
+        for model in models.keys():
+            # Fragile string-based matching.
+            if "'{}':".format(model) in line:
+                if model in found:
+                    raise ValidationError(
+                            "Model '{}' frozen twice.".format(model))
+                found[model] = True
 
 
 @register_validator
@@ -45,6 +53,29 @@ def check_duplicate_fields(f):
     """
     Verify that no model has the same field frozen twice.
     """
+    # parse_migration() gives us dicts, which cannot have duplicate keys.
+    # So we have to get messy and look at the raw file.
+    models, complete_apps = parse_migration(f)
+    current_model = None
+    fields_found = {}
+    f.seek(0)
+    for line in f:
+        # Check if this line starts a new model definition.
+        for model in models.keys():
+            # Fragile string-based matching.
+            if "'{}':".format(model) in line:
+                current_model = model
+                fields_found = {}
+        # Check if this line is a field definition.
+        if current_model:
+            for field in models[current_model].keys():
+                # Fragile string-based matching.
+                if "'{}':".format(field) in line:
+                    if field in fields_found:
+                        raise ValidationError(
+                            "Field '{}' of model '{}' frozen twice.".format(
+                                field, current_model))
+                    fields_found[field] = True
 
 
 @register_validator
@@ -53,25 +84,10 @@ def check_model_names(f):
     Verify that the frozen model name is lowercase and matches the capitalized
     model name in Meta.
     """
-    # Example:
-    #     'app_zeta.model15': {
-    #         'Meta': {'ordering': "['qpwepzldn']", 'object_name': 'Model15'},
-    meta_re = re.compile("^ *'Meta': {.*'object_name': '([a-zA-Z0-9_]+)'.*},$")
-    skip_lines_until_frozen_models(f)
-    while True:
-        try:
-            line = f.next()
-        except StopIteration:
-            break
-        line1_match = model_start_re.match(line)
-        if not line1_match:
-            continue
-        line2_match = meta_re.match(f.next())
-        if not line2_match:
-            raise ValidationError("Could not grok the line after "
-                                  "this line: '{}'.".format(line))
-        lowercase_model_name = line1_match.group(2)
-        capitalized_model_name = line2_match.group(1)
+    models, complete_apps = parse_migration(f)
+    for model, fields in models.iteritems():
+        app_name, lowercase_model_name = model.split('.')
+        capitalized_model_name = fields['Meta']['object_name']
         if lowercase_model_name.lower() != lowercase_model_name:
             raise ValidationError("Expected lower-case app.model_name, but "
                                   "found '{}'.".format(lowercase_model_name))
@@ -86,7 +102,7 @@ def check_model_names(f):
 def check_gratuitous_frozen_models(f):
     """
     Verify that a model is frozen only if it is in a complete_apps app, or if it
-    is referenced as a ForeignKey.
+    is referenced by a ForeignKey.
     """
 
 

@@ -1,5 +1,7 @@
 import nose
 
+from anger.sanity_check_migration import check_duplicate_fields
+from anger.sanity_check_migration import check_duplicate_models
 from anger.sanity_check_migration import check_model_names
 from anger.sanity_check_migration import ValidationError
 
@@ -10,3 +12,15 @@ def check_model_names_test():
         check_model_names(open("testdata/bad_migration_bad_model_name_1.py"))
     with nose.tools.assert_raises(ValidationError):
         check_model_names(open("testdata/bad_migration_bad_model_name_2.py"))
+
+
+def check_duplicate_models_test():
+    check_duplicate_models(open("testdata/good_migration.py"))
+    with nose.tools.assert_raises(ValidationError):
+        check_duplicate_models(open("testdata/bad_migration_model_frozen_twice.py"))
+
+
+def check_duplicate_fields_test():
+    check_duplicate_fields(open("testdata/good_migration.py"))
+    with nose.tools.assert_raises(ValidationError):
+        check_duplicate_fields(open("testdata/bad_migration_field_frozen_twice.py"))
