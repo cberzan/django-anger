@@ -4,9 +4,9 @@
 TODO
 """
 
-from anger.utils import is_related
-from anger.utils import parse_migration
-from anger.utils import related_target
+from anger.migration_utils import is_related
+from anger.migration_utils import parse_migration
+from anger.migration_utils import related_target
 
 
 class ValidationError(Exception):
