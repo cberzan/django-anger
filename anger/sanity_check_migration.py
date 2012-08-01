@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 
 """
-TODO
+Parses a South migration file, and does some basic sanity checking on it.
+
+Usage from the shell:
+
+    python -m anger.sanity_check_migration my_migration.py
+
+Usage from Python:
+
+    from anger.sanity_check_migration import validate_migration_file
+    validate_migration_file(open('my_migration.py'))
 """
 
 from anger.migration_utils import is_related
