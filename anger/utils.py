@@ -1,4 +1,6 @@
 import ast
+import re
+
 
 def parse_migration(f):
     """
@@ -44,4 +46,26 @@ def parse_migration(f):
 
     return models, complete_apps
 
+
+def is_foreign_key(field):
+    """
+    Return True if the given field definition is a ForeignKey.
+
+    >>> is_foreign_key(('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}))
+    False
+    >>> is_foreign_key(('django.db.models.fields.related.ForeignKey', [], {'related_name': "'asdfadfa'", 'to': "orm['app_zeta.Model15']"}))
+    True
+    """
+    return field[0] == 'django.db.models.fields.related.ForeignKey'
+
+
+def foreign_key_target(field):
+    """
+    Return target model of ForeignKey field, as a "app.ModelName" string.
+
+    >>> foreign_key_target(('django.db.models.fields.related.ForeignKey', [], {'related_name': "'asdfadfa'", 'to': "orm['app_zeta.Model15']"}))
+    'app_zeta.Model15'
+    """
+    to_re = re.compile("^orm\['([^']+)'\]$")
+    return to_re.match(field[2]['to']).group(1)
 

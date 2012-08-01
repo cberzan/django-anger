@@ -4,6 +4,8 @@
 TODO
 """
 
+from anger.utils import foreign_key_target
+from anger.utils import is_foreign_key
 from anger.utils import parse_migration
 
 
@@ -22,12 +24,22 @@ def register_validator(func):
 @register_validator
 def check_missing_foreign_keys(f):
     """
-    Verify that for all ForeignKeys referenced in model fields, the destination
-    model is also frozen.
+    Verify that for all ForeignKeys, the target model is also frozen.
     """
+    models, complete_apps = parse_migration(f)
+    for model, fields in models.iteritems():
+        for field_name, field_def in fields.iteritems():
+            if field_name == 'Meta':
+                continue
+            if not is_foreign_key(field_def):
+                continue
+            target = foreign_key_target(field_def).lower()
+            if target not in models:
+                raise ValidationError(
+                    "Field '{}' has ForeignKey to model '{}', which is "
+                    "not frozen.".format(field_name, target))
 
 
-    
 @register_validator
 def check_duplicate_models(f):
     """
@@ -104,6 +116,19 @@ def check_gratuitous_frozen_models(f):
     Verify that a model is frozen only if it is in a complete_apps app, or if it
     is referenced by a ForeignKey.
     """
+    models, complete_apps = parse_migration(f)
+    foreign_key_targets = set()
+    for model, fields in models.iteritems():
+        for field_name, field_def in fields.iteritems():
+            if field_name == 'Meta':
+                continue
+            if is_foreign_key(field_def):
+                foreign_key_targets.add(foreign_key_target(field_def).lower())
+    for model in models:
+        app, model_name = model.split('.')
+        if app not in complete_apps and model not in foreign_key_targets:
+            raise ValidationError(
+                    "Model '{}' frozen but not used.".format(model))
 
 
 def validate_migration_file(f):
