@@ -4,9 +4,9 @@
 TODO
 """
 
-from anger.utils import foreign_key_target
-from anger.utils import is_foreign_key
+from anger.utils import is_related
 from anger.utils import parse_migration
+from anger.utils import related_target
 
 
 class ValidationError(Exception):
@@ -22,18 +22,18 @@ def register_validator(func):
 
 
 @register_validator
-def check_missing_foreign_keys(f):
+def check_missing_related_models(f):
     """
-    Verify that for all ForeignKeys, the target model is also frozen.
+    Verify that for all related models, the target model is also frozen.
     """
     models, complete_apps = parse_migration(f)
     for model, fields in models.iteritems():
         for field_name, field_def in fields.iteritems():
             if field_name == 'Meta':
                 continue
-            if not is_foreign_key(field_def):
+            if not is_related(field_def):
                 continue
-            target = foreign_key_target(field_def).lower()
+            target = related_target(field_def).lower()
             if target not in models:
                 raise ValidationError(
                     "Field '{}' has ForeignKey to model '{}', which is "
@@ -117,16 +117,16 @@ def check_gratuitous_frozen_models(f):
     is referenced by a ForeignKey.
     """
     models, complete_apps = parse_migration(f)
-    foreign_key_targets = set()
+    related_targets = set()
     for model, fields in models.iteritems():
         for field_name, field_def in fields.iteritems():
             if field_name == 'Meta':
                 continue
-            if is_foreign_key(field_def):
-                foreign_key_targets.add(foreign_key_target(field_def).lower())
+            if is_related(field_def):
+                related_targets.add(related_target(field_def).lower())
     for model in models:
         app, model_name = model.split('.')
-        if app not in complete_apps and model not in foreign_key_targets:
+        if app not in complete_apps and model not in related_targets:
             raise ValidationError(
                     "Model '{}' frozen but not used.".format(model))
 
