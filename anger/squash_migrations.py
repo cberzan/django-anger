@@ -1,7 +1,19 @@
 #!/usr/bin/env python
 
 """
-TODO
+Squash the initial migrations for multiple apps into a single combined
+migration, avoiding potential issues with circular dependencies. See
+ResettingMigrations.md for details.
+
+Usage:
+
+Suppose you git-cloned django-anger at $ANGER, your Django project is at
+$PROJECT, and you have app_alpha, app_beta, and app_gamma, each with an initial
+migration. To create a combined migration, put it in app_alpha, and update the
+other initial migrations to depend on this combined migration, run:
+
+    cd $PROJECT
+    PYTHONPATH=$ANGER python -m anger.squash_migrations app_alpha
 """
 
 from StringIO import StringIO
@@ -89,7 +101,20 @@ def _pretty_print_complete_apps(apps, output):
 
 def squash_migrations(app_to_migration_path):
     """
-    TODO
+    Squash many initial migrations into a single migration.
+
+    `app_to_migration_path` is a dict from app name to the path of the initial
+    migration for that app.
+
+    Returns the squashed migration as a StringIO object.
+
+    The squashed migration has:
+    - no dependencies
+    - a forwards() function obtained by concatenating the forwards() functions
+      of all the given migrations
+    - a backwards() function that raises RuntimeError
+    - all frozen models in all the given migrations
+    - all complete_apps in all the given migrations
     """
     output = StringIO()
 
@@ -126,7 +151,23 @@ def squash_migrations(app_to_migration_path):
 def make_dummy_migration(app, migration_path, destination_app,
                          squashed_migration_name):
     """
-    TODO
+    Make a new initial migration for an app whose initial migration has been
+    squashed.
+
+    `app` is the name of the app for which to create an initial migration.
+    `migration_path` is the path to the initial migration for that app.
+    `destination_app` is the app containing the new squashed migration.
+    `squashed_migration_name` is the name of the squashed migration (without
+    the '.py' suffix)
+
+    Returns the new initial migration as a StringIO object.
+
+    The new migration has:
+    - a dependency on the squashed migration
+    - a forwards() function that does nothing
+    - a backwards() function that raises RuntimeError
+    - all frozen models in the original migration
+    - the complete_apps in the original migration
     """
     output = StringIO()
 
