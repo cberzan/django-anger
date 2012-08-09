@@ -2,6 +2,25 @@ import ast
 import re
 
 
+def forwards_contents(f):
+    """
+    Return a string containing everything in the forwards() method of a
+    migration.
+
+    This string may not be safe to evaluate.
+    """
+    forwards_found = False
+    forwards_lines = []
+    for line in f:
+        if 'def backwards(self, orm):' in line:
+            break
+        if forwards_found:
+            forwards_lines.append(line)
+        elif 'def forwards(self, orm):' in line:
+            forwards_found = True
+    return ''.join(forwards_lines)
+
+
 def parse_migration(f):
     """
     Parse migration file and return (frozen_models, complete_apps).
