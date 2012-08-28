@@ -16,6 +16,10 @@ other initial migrations to depend on this combined migration, run:
     PYTHONPATH=$ANGER python -m anger.squash_migrations app_alpha
 """
 
+# TODO
+# - validate migrations individually before squashing
+# - if the same model is frozen in multiple apps, assert it's equal everywhere
+
 from StringIO import StringIO
 import os
 import shutil
@@ -39,6 +43,34 @@ def get_south_apps(project_dir):
         if os.path.exists(os.path.join(dirname, 'migrations')):
             apps.append(app)
     return apps
+
+
+def get_migration_filenames(app_dir):
+    """
+    Return list of filenames of all migrations in the given app dir.
+    """
+    filenames = []
+    migrations_dir = os.path.join(app_dir, 'migrations')
+    for filename in os.listdir(migrations_dir):
+        if not filename.endswith('.py'):
+            continue
+        if filename == '__init__.py':
+            continue
+        filenames.append(filename)
+    return filenames
+
+
+def get_path_of_sole_initial_migration(app_dir):
+    """
+    Return path to the sole 0001_initial migration in the given app dir.
+
+    Raise ValueError if the app has other migrations.
+    """
+    filenames = get_migration_filenames(app_dir)
+    if len(filenames) != 1 or filenames[0] != '0001_initial.py':
+        raise ValueError("App '{}' has non-initial migrations."
+                            .format(app_dir))
+    return os.path.join(app_dir, 'migrations', filenames[0])
 
 
 _imports = \
@@ -202,20 +234,13 @@ if __name__ == '__main__':
     print
 
     # Verify that all apps have only an initial migration.
+    # Create dict from app to path of initial migration.
     app_to_migration_path = {}
     for app in apps:
-        migrations_dir = os.path.join(project_dir, app, 'migrations')
-        for filename in os.listdir(migrations_dir):
-            if not filename.endswith('.py'):
-                continue
-            if filename == '__init__.py':
-                continue
-            if filename == '0001_initial.py':
-                app_to_migration_path[app] = \
-                    os.path.join(migrations_dir, filename)
-            else:
-                raise ValueError("Found non-initial migration '{}' "
-                                 "in app '{}'.".format(filename, app))
+        app_dir = os.path.join(project_dir, app)
+        app_to_migration_path[app] = \
+            get_path_of_sole_initial_migration(app_dir)
+
     # Verify that the given destination app is valid.
     destination_app = sys.argv[1]
     if destination_app not in apps:
@@ -234,9 +259,9 @@ if __name__ == '__main__':
     # Update the initial migration for every app.
     print "Updating initial migrations..."
     for app in apps:
-        migration_path = os.path.join(app, 'migrations', '0001_initial.py')
+        migration_path = app_to_migration_path[app]
         if app == destination_app:
-            new_path = os.path.join(app, 'migrations', '0002_initial.py')
+            new_path = migration_path.replace('0001', '0002')
             shutil.move(migration_path, new_path)
             migration_path = new_path
         dummy_migration = make_dummy_migration(app, migration_path,
