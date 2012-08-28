@@ -5,6 +5,9 @@ http://english.stackexchange.com/questions/30939/is-used-in-anger-a-britishism-f
 
 ## Sanity-checking a South migration
 
+This is useful to make sure you didn't break anything, in case you had to do
+some manual surgery on migration files.
+
 From the directory containing `anger`:
 
 ```
@@ -39,6 +42,9 @@ Again, read ResettingMigrations.md for the gory details.
 
 
 ## Displaying the strings contained in a South migration.
+
+This is useful to make sure you haven't left any proprietary strings in a
+migration you want to publish.
 
 From the directory containing `anger`:
 
