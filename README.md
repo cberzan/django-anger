@@ -24,7 +24,8 @@ validate_migration_file(open('my_migration.py'))
 
 ## Squashing initial migrations into one
 
-This is useful when you have circular dependencies. See ResettingMigrations.md.
+This is useful when you want to reset your migration history, but you have
+circular dependencies between your apps. See ResettingMigrations.md.
 
 Usage:
 
