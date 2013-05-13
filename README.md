@@ -24,8 +24,9 @@ validate_migration_file(open('my_migration.py'))
 
 ## Squashing initial migrations into one
 
-This is useful when you want to reset your migration history, but you have
-circular dependencies between your apps. See ResettingMigrations.md.
+This is useful when you want to [reset your migration
+history](ResettingMigrations.md), but you have circular
+dependencies between your apps.
 
 Usage:
 
@@ -39,7 +40,7 @@ cd $PROJECT
 PYTHONPATH=$ANGER python -m anger.squash_migrations app_alpha
 ```
 
-Again, read ResettingMigrations.md for the gory details.
+Please read [ResettingMigrations.md](ResettingMigrations.md) for details.
 
 
 ## Displaying the strings contained in a South migration.
