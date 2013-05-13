@@ -7,9 +7,9 @@ Usage:
     check_migration my_migration.py
 """
 
-from anger.migration_utils import is_related
-from anger.migration_utils import parse_migration
-from anger.migration_utils import related_target
+from django_anger.migration_utils import is_related
+from django_anger.migration_utils import parse_migration
+from django_anger.migration_utils import related_target
 
 
 class ValidationError(Exception):

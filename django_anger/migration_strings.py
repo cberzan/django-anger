@@ -14,7 +14,7 @@ Usage:
     migration_strings my_migration.py
 """
 
-from anger.migration_utils import parse_migration
+from django_anger.migration_utils import parse_migration
 
 
 def _deep_add(target, data):

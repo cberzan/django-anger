@@ -4,11 +4,11 @@ import subprocess
 import sys
 import tempfile
 
-from anger.squash_migrations import get_south_apps
-from anger.squash_migrations import get_migration_filenames
-from anger.squash_migrations import get_path_of_sole_initial_migration
-from anger.squash_migrations import squash_migrations
-from anger.squash_migrations import make_dummy_migration
+from django_anger.squash_migrations import get_south_apps
+from django_anger.squash_migrations import get_migration_filenames
+from django_anger.squash_migrations import get_path_of_sole_initial_migration
+from django_anger.squash_migrations import squash_migrations
+from django_anger.squash_migrations import make_dummy_migration
 
 
 def assert_equal_ignorespace_with_diff(got_str, expected_path):

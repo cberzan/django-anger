@@ -20,8 +20,8 @@ import os
 import shutil
 import textwrap
 
-from anger.migration_utils import forwards_contents
-from anger.migration_utils import parse_migration
+from django_anger.migration_utils import forwards_contents
+from django_anger.migration_utils import parse_migration
 
 
 def get_south_apps(project_dir):

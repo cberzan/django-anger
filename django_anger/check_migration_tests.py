@@ -1,11 +1,11 @@
 import nose
 
-from anger.sanity_check_migration import check_duplicate_fields
-from anger.sanity_check_migration import check_duplicate_models
-from anger.sanity_check_migration import check_gratuitous_frozen_models
-from anger.sanity_check_migration import check_missing_related_models
-from anger.sanity_check_migration import check_model_names
-from anger.sanity_check_migration import ValidationError
+from django_anger.check_migration import check_duplicate_fields
+from django_anger.check_migration import check_duplicate_models
+from django_anger.check_migration import check_gratuitous_frozen_models
+from django_anger.check_migration import check_missing_related_models
+from django_anger.check_migration import check_model_names
+from django_anger.check_migration import ValidationError
 
 
 def check_model_names_test():
