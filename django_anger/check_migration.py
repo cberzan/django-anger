@@ -3,14 +3,8 @@
 """
 Parse a South migration file, and do some basic sanity checking on it.
 
-Usage from the shell:
-
-    python -m anger.sanity_check_migration my_migration.py
-
-Usage from Python:
-
-    from anger.sanity_check_migration import validate_migration_file
-    validate_migration_file(open('my_migration.py'))
+Usage:
+    check_migration my_migration.py
 """
 
 from anger.migration_utils import is_related
@@ -150,7 +144,7 @@ def validate_migration_file(f):
         f.seek(0)
 
 
-if __name__ == '__main__':
+def main():
     import sys
     if len(sys.argv) < 2:
         print __doc__

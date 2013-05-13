@@ -10,14 +10,8 @@ Note that this tool only looks through the frozen models and complete_apps. In
 particular, it will not show strings contained in comments, forwards(),
 backwards(), etc.
 
-Usage from the shell:
-
-    python -m anger.migration_strings my_migration.py
-
-Usage from Python:
-
-    from anger.migration_strings import migration_strings
-    migration_strings(open('my_migration.py'))
+Usage:
+    migration_strings my_migration.py
 """
 
 from anger.migration_utils import parse_migration
@@ -51,7 +45,7 @@ def migration_strings(f):
     return strings
 
 
-if __name__ == '__main__':
+def main():
     import sys
     if len(sys.argv) != 2:
         print __doc__

@@ -6,14 +6,9 @@ migration, avoiding potential issues with circular dependencies. See
 ResettingMigrations.md for details.
 
 Usage:
-
-Suppose you git-cloned django-anger at $ANGER, your Django project is at
-$PROJECT, and you have app_alpha, app_beta, and app_gamma, each with an initial
-migration. To create a combined migration, put it in app_alpha, and update the
-other initial migrations to depend on this combined migration, run:
-
-    cd $PROJECT
-    PYTHONPATH=$ANGER python -m anger.squash_migrations app_alpha
+    # All apps in your Django project must have only an initial migration.
+    # Say you want to save the squashed migration in app_alpha.
+    squash_migrations app_alpha
 """
 
 # TODO
@@ -219,7 +214,7 @@ def make_dummy_migration(app, migration_path, destination_app,
     return output
 
 
-if __name__ == '__main__':
+def main():
     import sys
     if len(sys.argv) < 2:
         print __doc__
