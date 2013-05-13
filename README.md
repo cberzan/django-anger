@@ -1,4 +1,4 @@
-Tools and hacks for using Django "in anger".
+Tools and hacks for using Django _in anger_.
 
 http://english.stackexchange.com/questions/30939/is-used-in-anger-a-britishism-for-something
 
