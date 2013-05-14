@@ -10,6 +10,7 @@ setup(
     name = "django-anger",
     version = __version__,
     packages = ["django_anger"],
+    py_modules = ["distribute_setup"],
 
     # metadata for upload to PyPI
     author = "Constantin Berzan",
