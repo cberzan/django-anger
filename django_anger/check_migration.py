@@ -75,17 +75,18 @@ def check_duplicate_fields(f):
     fields_found = {}
     f.seek(0)
     for line in f:
+        line = line.strip()
         # Check if this line starts a new model definition.
         for model in models.keys():
             # Fragile string-based matching.
-            if "'{}':".format(model) in line:
+            if line.startswith("'{}': {{".format(model)):
                 current_model = model
                 fields_found = {}
         # Check if this line is a field definition.
         if current_model:
             for field in models[current_model].keys():
                 # Fragile string-based matching.
-                if "'{}':".format(field) in line:
+                if line.startswith("'{}': (".format(field)):
                     if field in fields_found:
                         raise ValidationError(
                             "Field '{}' of model '{}' frozen twice.".format(

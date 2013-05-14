@@ -413,7 +413,7 @@ class Migration(SchemaMigration):
             'field234': ('django.db.models.fields.IntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'field235': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'field236': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'default': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'field237': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'field238': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sadfdsf'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['app_mu.Model28']"}),
             'field240': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'adfasdd'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['app_nu.Model29']"}),
