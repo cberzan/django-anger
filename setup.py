@@ -32,9 +32,9 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'check_migration = django_anger.check_migration.main',
-            'squash_migrations = django_anger.squash_migrations.main',
-            'migration_strings = django_anger.migration_strings.main',
+            'check_migration = django_anger.check_migration:main',
+            'squash_migrations = django_anger.squash_migrations:main',
+            'migration_strings = django_anger.migration_strings:main',
         ],
     },
 )
