@@ -8,13 +8,13 @@ anger_](http://english.stackexchange.com/q/30939).
 pip install django-anger
 ```
 
-## Sanity-checking a South migration
+## Sanity-checking South migrations
 
 This is useful to make sure you didn't break anything, in case you had to do
-some manual surgery on migration files.
+some manual surgery on migration files. You can pass one or multiple files.
 
 ```sh
-check_migration my_migration.py
+check_migration migration_1.py [migration_2.py ...]
 ```
 
 
