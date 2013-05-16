@@ -48,6 +48,8 @@ def parse_migration(f):
             model_lines.append(line)
         elif complete_apps_found:
             complete_apps_lines.append(line)
+            if ']' in line:
+                break
     if not models_found or not complete_apps_found:
         raise ValueError('Could not parse migration.')
 

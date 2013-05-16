@@ -5,6 +5,7 @@ from django_anger.check_migration import check_duplicate_models
 from django_anger.check_migration import check_gratuitous_frozen_models
 from django_anger.check_migration import check_missing_related_models
 from django_anger.check_migration import check_model_names
+from django_anger.check_migration import validate_migration_file
 from django_anger.check_migration import ValidationError
 
 
@@ -38,3 +39,7 @@ def check_gratuitous_frozen_models_test():
     check_gratuitous_frozen_models(open("testdata/good_migration.py"))
     with nose.tools.assert_raises(ValidationError):
         check_gratuitous_frozen_models(open("testdata/bad_migration_gratuitous_frozen_model.py"))
+
+
+def data_migration_test():
+    validate_migration_file(open("testdata/good_data_migration.py"))
