@@ -53,8 +53,8 @@ initial migration for ALL apps. **django-anger** has a script for this:
 
 ```sh
 cd $PROJECT
-# app1 is the app where you want to save the squashed migration
-PYTHONPATH=$ANGER python -m anger.squash_migrations app1
+# this will create the squashed migration in app1/migrations/0001_everything.py
+squash_migrations app1
 ```
 
 This generates a new migration `app1/migrations/0001_everything.py`, which
