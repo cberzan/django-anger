@@ -6,6 +6,11 @@ from setuptools import setup
 from django_anger import __version__
 
 
+long_description = \
+"""
+Please see the docs at https://github.com/cberzan/django-anger.
+"""
+
 setup(
     name = "django-anger",
     version = __version__,
@@ -16,7 +21,7 @@ setup(
     author = "Constantin Berzan",
     author_email = "cberzan@gmail.com",
     description = "tools and hacks for using Django _in anger_",
-    # long_description = 
+    long_description = long_description,
     license = "MIT",
     keywords = "django south migration migrations",
     url = "https://github.com/cberzan/django-anger",
